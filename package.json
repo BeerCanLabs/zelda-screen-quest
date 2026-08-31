@@ -1,0 +1,11 @@
+{
+  "name": "zelda-screen-quest",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A classic Zelda-style multi-screen game built with procedural canvas rendering and chip-tune audio.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "devDependencies": {}
+}

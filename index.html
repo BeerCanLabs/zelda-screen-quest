@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zelda Screen Quest — Aiden's Adventure</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <header>
+      <h1>Zelda Screen Quest</h1>
+      <div id="volume-control">
+        <button id="volume-btn" title="Toggle Sound">🔊 Sound On</button>
+      </div>
+    </header>
+
+    <!-- The game screen -->
+    <div id="canvas-wrapper">
+      <canvas id="gameCanvas" width="640" height="480"></canvas>
+
+      <!-- Welcome Overlay / Start Screen -->
+      <div id="start-screen" class="overlay">
+        <div class="menu-box">
+          <h2>Zelda Screen Quest</h2>
+          <p class="subtitle">A classic 8-bit adventure for Aiden</p>
+          <div class="instructions">
+            <h3>Controls:</h3>
+            <ul>
+              <li><strong>Arrow Keys / WASD</strong> — Move Aiden</li>
+              <li><strong>Spacebar / Enter</strong> — Swing Sword</li>
+              <li><strong>E Key</strong> — Interact with NPCs / Buy Upgrades</li>
+            </ul>
+          </div>
+          <button id="start-btn" class="pixel-btn">Start Adventure</button>
+        </div>
+      </div>
+
+      <!-- Game Over Overlay -->
+      <div id="gameover-screen" class="overlay hidden">
+        <div class="menu-box critical">
+          <h2>GAME OVER</h2>
+          <p>Aiden fell in battle...</p>
+          <button id="restart-btn" class="pixel-btn">Try Again</button>
+        </div>
+      </div>
+
+      <!-- Victory Overlay -->
+      <div id="victory-screen" class="overlay hidden">
+        <div class="menu-box success">
+          <h2>VICTORY!</h2>
+          <p>The Infernal Dragon has been vanquished!</p>
+          <p>Aiden has restored peace to the realm!</p>
+          <div id="final-stats"></div>
+          <button id="play-again-btn" class="pixel-btn">Play Again</button>
+        </div>
+      </div>
+
+      <!-- NPC Dialogue Overlay -->
+      <div id="dialogue-box" class="hidden">
+        <div class="npc-header">
+          <span id="npc-name">NPC Name</span>
+        </div>
+        <div class="npc-body">
+          <p id="npc-text">Dialogue text goes here.</p>
+          <div id="npc-options"></div>
+        </div>
+        <div class="npc-footer">
+          <span>Press [E] to Close</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live HUD stats -->
+    <div id="hud-panel">
+      <div class="hud-item">
+        <span class="label">HP:</span>
+        <div class="progress-bar-container">
+          <div id="hp-bar" class="progress-bar red" style="width: 100%;"></div>
+          <span id="hp-text">100/100</span>
+        </div>
+      </div>
+      <div class="hud-item">
+        <span class="label">Points:</span>
+        <span id="points-val" class="value yellow">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="label">Zone:</span>
+        <span id="zone-name" class="value">Starting Village</span>
+      </div>
+      <div class="hud-item expandable">
+        <span class="label">Stats:</span>
+        <div class="stats-grid">
+          <div>⚔️ ATK: <span id="stat-atk">25</span></div>
+          <div>🛡️ DEF: <span id="stat-def">0</span></div>
+          <div>⚡ SPD: <span id="stat-spd">3.0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Built with Pure HTML5 Canvas & Web Audio API • 100% Procedural</p>
+    </footer>
+  </div>
+
+  <!-- Load Game modules -->
+  <script src="game-core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

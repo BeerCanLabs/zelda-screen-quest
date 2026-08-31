@@ -1,0 +1,20 @@
+# DRAFT Software Deployment Pattern
+appName: zelda-screen-quest
+architectureTier: Tier 1 (Stateless / Client-Only)
+deploymentSubstrate: GitHub Pages
+description: A browser-based Zelda-style screen-transitioning action game utilizing HTML5 Canvas and Web Audio API.
+components:
+  - name: frontend
+    type: static-web
+    runtime: HTML5 / ES6 JavaScript
+    hosting: GitHub Pages
+    cdn: enabled
+    customDomain: zelda-screen-quest.dalesackrider.com
+    ciCdPipeline: GitHub Actions (.github/workflows/deploy.yml)
+dependencies:
+  - name: Web Audio API
+    type: browser-native
+    purpose: Sound effects and procedural background music synthesis
+  - name: Canvas 2D Context
+    type: browser-native
+    purpose: Procedural pixel art rendering and smooth camera transitions
