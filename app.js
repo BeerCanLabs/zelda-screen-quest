@@ -764,7 +764,7 @@ const cloudLoadBtn = document.getElementById("cloud-load-btn");
 const cloudStatus = document.getElementById("cloud-status");
 
 const API_BASE = window.location.origin.includes("github.io")
-  ? "https://zelda-screen-quest-service-url.a.run.app"
+  ? "https://zelda-screen-quest-382872241265.us-central1.run.app"
   : "";
 
 async function saveCloudState() {
