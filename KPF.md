@@ -42,3 +42,20 @@ This document maps all user-facing capabilities of **Zelda Screen Quest** to the
   - Rendering: `app.js::drawVictoryScreen()`
 - **If it silently breaks:** The boss does not spawn, defeating the boss does not end the game, or the victory screen fails to display.
 - **Test status:** Automated (test/game-core.test.js::"KPF 5: defeating the dragon boss triggers victory state")
+
+## 6. Persistent Game Save State Export & Import
+- **Description:** Game state (HP, maxHP, damage, speed, shield, points, screen coordinates, unlocked upgrades) is serialized and deserialized cleanly without DOM dependencies, supporting continuous session persistence across GCP deployments.
+- **Entry points:**
+  - Logic: `game-core.js::exportSaveState()`, `game-core.js::importSaveState()`
+  - Client UI: `app.js::saveCloudState()`, `app.js::loadCloudState()`
+- **If it silently breaks:** Saved state drops attributes, resets progress to defaults, or corrupts player position when reloading across screens.
+- **Test status:** Automated (test/game-core.test.js::"KPF 6: exportSaveState and importSaveState preserve player progression across GCP sessions")
+
+## 7. GCP Cloud Run REST API Persistence & Health check
+- **Description:** Containerized Node.js service running on GCP Cloud Run (Port 8080) providing `/api/v1/health`, `/api/v1/auth/session`, and `/api/v1/player/state` REST API endpoints for persistent state storage.
+- **Entry points:**
+  - Server: `server.js` (HTTP REST API router + CORS + persistent file/memory store)
+  - Containerization: `Dockerfile`, `cloudbuild.yaml`
+- **If it silently breaks:** The container crashes on Cloud Run, CORS blocks client requests from GitHub Pages, or save payloads fail to write.
+- **Test status:** Automated (test/api.test.js::"KPF 7: GCP Cloud Run healthcheck endpoint returns 200 OK and Tier 2 spec", "KPF 7: saving and loading player state via REST API persists data")
+

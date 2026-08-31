@@ -187,3 +187,37 @@ test("KPF 5: defeating the dragon boss triggers victory state", () => {
   assert.equal(state.isVictory, true, "Game should enter Victory state upon Boss defeat");
   assert.equal(state.isGameOver, false);
 });
+
+// ── KPF 6: Persistent Game Save State Export & Import ───────────────────────
+
+test("KPF 6: exportSaveState and importSaveState preserve player progression across GCP sessions", () => {
+  const { exportSaveState, importSaveState } = require("../game-core.js");
+  const state = createState();
+
+  // Mutate player stats (simulating gameplay progression)
+  state.player.points = 250;
+  state.player.damage = 50;
+  state.player.shield = 15;
+  state.player.screenX = 2;
+  state.player.screenY = 1;
+  state.player.x = 200;
+  state.player.y = 150;
+
+  const exported = exportSaveState(state);
+  assert.ok(exported, "Save state export should return a payload");
+  assert.equal(exported.tier, "Tier 2 Persistent Web Game");
+  assert.equal(exported.player.points, 250);
+  assert.equal(exported.player.damage, 50);
+
+  // Re-create fresh game state and import save state
+  const newState = createState();
+  const success = importSaveState(newState, exported);
+
+  assert.equal(success, true, "Importing valid save state should succeed");
+  assert.equal(newState.player.points, 250);
+  assert.equal(newState.player.damage, 50);
+  assert.equal(newState.player.shield, 15);
+  assert.equal(newState.player.screenX, 2);
+  assert.equal(newState.player.screenY, 1);
+});
+

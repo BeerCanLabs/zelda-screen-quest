@@ -759,10 +759,83 @@ window.addEventListener("keyup", (e) => {
   keys[e.key] = false;
 });
 
-startBtn.addEventListener("click", () => {
+const cloudSaveBtn = document.getElementById("cloud-save-btn");
+const cloudLoadBtn = document.getElementById("cloud-load-btn");
+const cloudStatus = document.getElementById("cloud-status");
+
+const API_BASE = window.location.origin.includes("github.io")
+  ? "https://zelda-screen-quest-service-url.a.run.app"
+  : "";
+
+async function saveCloudState() {
+  if (!state || !ZeldaCore.exportSaveState) return;
+  const exported = ZeldaCore.exportSaveState(state);
+  try {
+    cloudStatus.innerText = "Saving to GCP...";
+    const res = await fetch(`${API_BASE}/api/v1/player/state`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playerId: "aiden-player-1", state: exported }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      cloudStatus.innerText = "☁️ GCP Persistent!";
+      setTimeout(() => {
+        if (cloudStatus) cloudStatus.innerText = "GCP Tier 2";
+      }, 3000);
+    } else {
+      cloudStatus.innerText = "Save Failed";
+    }
+  } catch (err) {
+    console.warn("GCP Persistence API offline or unreachable:", err);
+    cloudStatus.innerText = "Local Mode";
+  }
+}
+
+async function loadCloudState() {
+  if (!state || !ZeldaCore.importSaveState) return;
+  try {
+    cloudStatus.innerText = "Loading GCP state...";
+    const res = await fetch(`${API_BASE}/api/v1/player/state?playerId=aiden-player-1`);
+    const data = await res.json();
+    if (data.success && data.state) {
+      ZeldaCore.importSaveState(state, data.state);
+      cloudStatus.innerText = "🔄 Loaded GCP State!";
+      updateHUD();
+      draw();
+      setTimeout(() => {
+        if (cloudStatus) cloudStatus.innerText = "GCP Tier 2";
+      }, 3000);
+    } else {
+      cloudStatus.innerText = "No Save State";
+    }
+  } catch (err) {
+    console.warn("GCP Persistence API offline or unreachable:", err);
+    cloudStatus.innerText = "Local Mode";
+  }
+}
+
+cloudSaveBtn.addEventListener("click", () => {
+  saveCloudState();
+});
+
+cloudLoadBtn.addEventListener("click", () => {
+  loadCloudState();
+});
+
+// Auto-save every 45 seconds during gameplay
+setInterval(() => {
+  if (state && !state.isGameOver && !state.isVictory) {
+    saveCloudState();
+  }
+}, 45000);
+
+startBtn.addEventListener("click", async () => {
   initAudio();
   startScreen.classList.add("hidden");
   state = ZeldaCore.createState();
+  // Attempt to load existing GCP save state if available
+  await loadCloudState();
   ZeldaCore.spawnEnemies(state, state.player.screenX, state.player.screenY);
   requestAnimationFrame(gameLoop);
 });
@@ -786,3 +859,4 @@ volumeBtn.addEventListener("click", () => {
 // Initialize fresh state instantly for template display before start clicks
 state = ZeldaCore.createState();
 draw();
+

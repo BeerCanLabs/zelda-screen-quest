@@ -40,7 +40,7 @@ header h1 {
   letter-spacing: 1px;
 }
 
-#volume-btn {
+#volume-btn, .hdr-btn {
   background-color: #24242e;
   border: 2px solid #555;
   color: #fff;
@@ -49,12 +49,30 @@ header h1 {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.1s ease;
+  border-radius: 4px;
 }
 
-#volume-btn:hover {
+#volume-btn:hover, .hdr-btn:hover {
   background-color: #3e3e4f;
   border-color: #888;
 }
+
+#cloud-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-tag {
+  background-color: #1b4332;
+  color: #52b788;
+  border: 1px solid #40916c;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
 
 #canvas-wrapper {
   position: relative;

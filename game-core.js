@@ -773,6 +773,53 @@
     state.enemies = state.enemies.filter((enemy) => enemy.hp > 0);
   }
 
+  function exportSaveState(state) {
+    if (!state || !state.player) return null;
+    return {
+      version: "2.0.0",
+      tier: "Tier 2 Persistent Web Game",
+      player: {
+        x: state.player.x,
+        y: state.player.y,
+        screenX: state.player.screenX,
+        screenY: state.player.screenY,
+        facing: state.player.facing,
+        hp: state.player.hp,
+        maxHp: state.player.maxHp,
+        points: state.player.points,
+        damage: state.player.damage,
+        speed: state.player.speed,
+        shield: state.player.shield,
+        unlockedUpgrades: state.player.unlockedUpgrades ? [...state.player.unlockedUpgrades] : [],
+      },
+      isGameOver: state.isGameOver,
+      isVictory: state.isVictory,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  function importSaveState(state, savedData) {
+    if (!state || !savedData || !savedData.player) return false;
+    const p = savedData.player;
+    state.player.x = typeof p.x === "number" ? p.x : state.player.x;
+    state.player.y = typeof p.y === "number" ? p.y : state.player.y;
+    state.player.screenX = typeof p.screenX === "number" ? p.screenX : state.player.screenX;
+    state.player.screenY = typeof p.screenY === "number" ? p.screenY : state.player.screenY;
+    state.player.facing = p.facing || state.player.facing;
+    state.player.hp = typeof p.hp === "number" ? p.hp : state.player.hp;
+    state.player.maxHp = typeof p.maxHp === "number" ? p.maxHp : state.player.maxHp;
+    state.player.points = typeof p.points === "number" ? p.points : state.player.points;
+    state.player.damage = typeof p.damage === "number" ? p.damage : state.player.damage;
+    state.player.speed = typeof p.speed === "number" ? p.speed : state.player.speed;
+    state.player.shield = typeof p.shield === "number" ? p.shield : state.player.shield;
+    state.player.unlockedUpgrades = Array.isArray(p.unlockedUpgrades) ? [...p.unlockedUpgrades] : [];
+    state.isGameOver = !!savedData.isGameOver;
+    state.isVictory = !!savedData.isVictory;
+
+    spawnEnemies(state, state.player.screenX, state.player.screenY);
+    return true;
+  }
+
   return {
     SCREEN_WIDTH,
     SCREEN_HEIGHT,
@@ -795,5 +842,8 @@
     interactWithNPC,
     buyUpgrade,
     update,
+    exportSaveState,
+    importSaveState,
   };
 });
+

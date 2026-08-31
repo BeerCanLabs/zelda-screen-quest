@@ -1,16 +1,22 @@
 # DRAFT Software Deployment Pattern
 appName: zelda-screen-quest
-architectureTier: Tier 1 (Stateless / Client-Only)
-deploymentSubstrate: GitHub Pages
-description: A browser-based Zelda-style screen-transitioning action game utilizing HTML5 Canvas and Web Audio API.
+architectureTier: Tier 2 (Persistent Web Game with Auth/DB)
+deploymentSubstrate: GitHub Pages + GCP Cloud Run
+description: A browser-based Zelda-style action-adventure game with persistent player state backend deployed on GCP Cloud Run.
 components:
   - name: frontend
     type: static-web
     runtime: HTML5 / ES6 JavaScript
     hosting: GitHub Pages
     cdn: enabled
-    customDomain: zelda-screen-quest.dalesackrider.com
     ciCdPipeline: GitHub Actions (.github/workflows/deploy.yml)
+  - name: backend-api
+    type: containerized-microservice
+    runtime: Node.js 20 (Express/HTTP REST API)
+    hosting: GCP Cloud Run
+    port: 8080
+    scaling: auto (min 0, max 10)
+    ciCdPipeline: Google Cloud Build (cloudbuild.yaml)
 dependencies:
   - name: Web Audio API
     type: browser-native
@@ -18,3 +24,6 @@ dependencies:
   - name: Canvas 2D Context
     type: browser-native
     purpose: Procedural pixel art rendering and smooth camera transitions
+  - name: GCP Cloud Run REST API
+    type: cloud-service
+    purpose: Player session authentication and persistent game save state storage
